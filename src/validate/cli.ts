@@ -1,5 +1,6 @@
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
+import { resolve } from 'node:path';
 import { loadRepo, loadRepoAtRef, type ValidationError } from '../model/load';
 import { validateRepo } from './rules';
 import { checkImmutability, checkRawNotes } from './immutability';
@@ -28,7 +29,7 @@ async function main(): Promise<number> {
   // Git-ref comparison reads `data/` at the ref, so it only applies to the default
   // data dir; a custom TA_DATA_DIR (e.g. a fixture) skips it. Missing refs (no
   // commits yet, no origin/main) are skipped silently.
-  if (dataDir === 'data') {
+  if (resolve(dataDir) === resolve('data')) {
     const refs = [parseBase(process.argv.slice(2))];
     if (!refs.includes('origin/main') && (await refExists('origin/main'))) refs.push('origin/main');
     for (const ref of refs) {

@@ -83,8 +83,35 @@ function parseYamlFile(text: string, file: string, errors: ValidationError[]): u
   }
 }
 
-function loadFromSource(src: Source): { data: RepoData; errors: ValidationError[] } {
+/** True when the loader loads (or deliberately skips) this data-dir-relative file. */
+function isKnownFile(rel: string): boolean {
+  if (rel === '.gitkeep' || rel.endsWith('/.gitkeep')) return true;
+  if (rel === 'team.yaml' || rel === 'themes.yaml') return true;
+  if (rel.startsWith('meetings/raw/')) return true;
+  const m = /^(meetings|tasks|decisions|assumptions)\/([^/]+)$/.exec(rel);
+  if (!m) return false;
+  return m[2]!.endsWith(m[1] === 'meetings' ? '.md' : '.yaml');
+}
+
+/**
+ * `allFiles` lists every file under the data dir (relative, forward slashes).
+ * When given, files the loader would silently ignore are reported as `unknown-file`.
+ */
+function loadFromSource(
+  src: Source,
+  allFiles?: string[],
+): { data: RepoData; errors: ValidationError[] } {
   const errors: ValidationError[] = [];
+  for (const rel of [...(allFiles ?? [])].sort()) {
+    if (!isKnownFile(rel)) {
+      errors.push({
+        file: `data/${rel}`,
+        rule: 'unknown-file',
+        message:
+          'file is never loaded (expected team.yaml, themes.yaml, meetings/*.md, tasks|decisions|assumptions/*.yaml)',
+      });
+    }
+  }
   const fileOf: Record<string, string> = {};
   const recordFiles: { id: string; file: string }[] = [];
   const repoPath = (rel: string) => `data/${rel}`;
@@ -156,8 +183,9 @@ function loadFromSource(src: Source): { data: RepoData; errors: ValidationError[
   return { data: { team, themes, meetings, tasks, decisions, assumptions, fileOf, recordFiles }, errors };
 }
 
-async function readDirSource(dataDir: string): Promise<Source> {
+async function readDirSource(dataDir: string): Promise<{ src: Source; allFiles: string[] }> {
   const src: Source = new Map();
+  const allFiles: string[] = [];
   const walk = async (rel: string) => {
     const entries = await readdir(join(dataDir, rel), { withFileTypes: true }).catch(() => []);
     for (const e of entries) {
@@ -165,20 +193,22 @@ async function readDirSource(dataDir: string): Promise<Source> {
       if (e.isDirectory()) {
         if (childRel === 'meetings/raw') continue; // raw notes are never loaded, only referenced
         await walk(childRel);
-      } else if (/\.(ya?ml|md)$/.test(e.name)) {
-        src.set(childRel, await readFile(join(dataDir, childRel), 'utf8'));
+      } else {
+        allFiles.push(childRel);
+        if (/\.(ya?ml|md)$/.test(e.name)) src.set(childRel, await readFile(join(dataDir, childRel), 'utf8'));
       }
     }
   };
   await walk('');
-  return src;
+  return { src, allFiles };
 }
 
 /** Loads a data directory. Schema and parse failures become `errors`; nothing throws. */
 export async function loadRepo(
   dataDir: string,
 ): Promise<{ data: RepoData; errors: ValidationError[] }> {
-  return loadFromSource(await readDirSource(dataDir));
+  const { src, allFiles } = await readDirSource(dataDir);
+  return loadFromSource(src, allFiles);
 }
 
 /**

@@ -127,3 +127,79 @@ describe('loadRepoAtRef', () => {
     }
   });
 });
+
+describe('unknown-file', () => {
+  const withBasic = (fn: (dir: string) => Promise<void>) => async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'ta-unknown-'));
+    try {
+      cpSync(fx('basic'), dir, { recursive: true });
+      await fn(dir);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  };
+
+  it('basic fixture has no stray files', withBasic(async (dir) => {
+    expect((await loadRepo(dir)).errors).toEqual([]);
+  }));
+
+  it('flags files the loader would ignore', withBasic(async (dir) => {
+    writeFileSync(join(dir, 'tasks', 'T-0009.yml'), 'id: T-0009\n');
+    mkdirSync(join(dir, 'tasks', 'old'));
+    writeFileSync(join(dir, 'tasks', 'old', 'T-0001.yaml'), 'id: T-0001\n');
+    mkdirSync(join(dir, 'decisions', 'sub'));
+    writeFileSync(join(dir, 'decisions', 'sub', 'D-0009.yaml'), 'x: 1\n');
+    writeFileSync(join(dir, 'assumptions', 'notes.txt'), 'hi');
+    writeFileSync(join(dir, 'meetings', '2026-11-09.yaml'), 'x: 1\n');
+    writeFileSync(join(dir, 'README.md'), '# hi');
+    const { errors } = await loadRepo(dir);
+    expect(errors.every((e) => e.rule === 'unknown-file')).toBe(true);
+    expect(errors.map((e) => e.file).sort()).toEqual([
+      'data/README.md',
+      'data/assumptions/notes.txt',
+      'data/decisions/sub/D-0009.yaml',
+      'data/meetings/2026-11-09.yaml',
+      'data/tasks/T-0009.yml',
+      'data/tasks/old/T-0001.yaml',
+    ]);
+  }));
+
+  it('allows .gitkeep anywhere and any file under meetings/raw', withBasic(async (dir) => {
+    writeFileSync(join(dir, 'tasks', '.gitkeep'), '');
+    writeFileSync(join(dir, '.gitkeep'), '');
+    mkdirSync(join(dir, 'meetings', 'raw', 'audio'));
+    writeFileSync(join(dir, 'meetings', 'raw', 'audio', 'x.m4a'), 'bin');
+    writeFileSync(join(dir, 'meetings', 'raw', 'x.txt'), 'raw');
+    expect((await loadRepo(dir)).errors).toEqual([]);
+  }));
+});
+
+describe('validate CLI default data dir', () => {
+  it.each(['./data', 'data/'])('runs immutability checks for TA_DATA_DIR=%s', (spelling) => {
+    const dir = mkdtempSync(join(tmpdir(), 'ta-cli-'));
+    try {
+      const git = (...a: string[]) => execFileSync('git', a, { cwd: dir, stdio: 'pipe' });
+      git('init', '-q');
+      mkdirSync(join(dir, 'data'));
+      cpSync(fx('basic'), join(dir, 'data'), { recursive: true });
+      git('add', '.');
+      git('-c', 'user.name=t', '-c', 'user.email=t@example.test', 'commit', '-q', '-m', 'x');
+      rmSync(join(dir, 'data', 'tasks', 'T-0008.yaml'));
+      const cli = join(__dirname, '..', '..', 'src', 'validate', 'cli.ts');
+      const tsx = join(__dirname, '..', '..', 'node_modules', 'tsx', 'dist', 'cli.mjs');
+      let stderr = '';
+      try {
+        execFileSync(process.execPath, [tsx, cli], {
+          cwd: dir,
+          stdio: 'pipe',
+          env: { ...process.env, TA_DATA_DIR: spelling },
+        });
+      } catch (e) {
+        stderr = String((e as { stderr: Buffer }).stderr);
+      }
+      expect(stderr).toContain('[deleted]');
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  }, 30000);
+});
