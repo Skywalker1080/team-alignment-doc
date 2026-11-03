@@ -4,8 +4,7 @@ The shared record of our meetings, tasks, decisions and assumptions (Yogesh, Ran
 You talk to Claude Code; Claude writes the files under `data/`; every push to `main` is checked
 and published to a view-only dashboard.
 
-Dashboard: `https://team-alignment.pages.dev` (once the Cloudflare setup below is done; the exact
-URL is shown in the Cloudflare Pages project).
+Dashboard: https://team-alignment.vercel.app
 
 ## One-time setup (each teammate)
 
@@ -59,13 +58,19 @@ shows the draft, and saves it after you confirm.
 
 ## Hosting setup (whoever owns the repo, once)
 
-1. In Cloudflare, create a Pages project named `team-alignment` (direct upload; no Git connection needed).
-2. Create a Cloudflare API token that can edit Pages, and find the account id.
-3. In the GitHub repo, go to Settings, Secrets and variables, Actions, and add the secrets
-   `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
-4. Push to `main` (or run the CI workflow by hand). Without the secrets, CI still checks everything and just skips the deploy.
+The dashboard is the Vercel project `team-alignment`. GitHub Actions deploys it to production
+only after every check passes (the Vercel Git integration is deliberately not connected, so a
+failing push never goes live).
 
-Vercel is not used: its free plan is for non-commercial projects only.
+1. Create a Vercel access token (Vercel, Account Settings, Tokens).
+2. In the GitHub repo, go to Settings, Secrets and variables, Actions, and add the secrets
+   `VERCEL_TOKEN`, `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID`. The two ids are in
+   `.vercel/project.json` after running `npx vercel link` in a clone (`orgId`, `projectId`).
+3. Push to `main` (or run the CI workflow by hand). Without `VERCEL_TOKEN`, CI still checks
+   everything and just skips the deploy.
+4. To deploy by hand from a clone: `npx vercel deploy --prod`.
+
+Note: Vercel's free Hobby plan is for non-commercial use; an agency project may need Pro.
 
 ## Troubleshooting
 
