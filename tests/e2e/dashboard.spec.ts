@@ -43,3 +43,33 @@ test('no horizontal overflow at 375px on any route', async ({ page }) => {
     expect(width, route).toBeLessThanOrEqual(375);
   }
 });
+
+test('today follows the clock on focus, visibilitychange and the minute timer', async ({ page }) => {
+  await page.clock.install({ time: new Date('2026-11-10T23:59:00+05:30') });
+  await open(page, 'today');
+  const title = page.locator('h1.page-title');
+  await expect(title).toHaveText('Tuesday 10 November');
+
+  await page.clock.setSystemTime(new Date('2026-11-11T09:00:00+05:30'));
+  await page.evaluate(() => window.dispatchEvent(new Event('focus')));
+  await expect(title).toHaveText('Wednesday 11 November');
+
+  await page.clock.setSystemTime(new Date('2026-11-12T09:00:00+05:30'));
+  await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
+  await expect(title).toHaveText('Thursday 12 November');
+
+  await page.clock.setSystemTime(new Date('2026-11-13T09:00:00+05:30'));
+  await page.clock.runFor(60_000);
+  await expect(title).toHaveText('Friday 13 November');
+});
+
+test('?today= stays pinned when the clock moves', async ({ page }) => {
+  await page.clock.install({ time: new Date('2026-11-10T09:00:00+05:30') });
+  await page.goto('/?today=2026-11-04#/today');
+  const title = page.locator('h1.page-title');
+  await expect(title).toHaveText('Wednesday 4 November');
+  await page.clock.setSystemTime(new Date('2026-11-11T09:00:00+05:30'));
+  await page.evaluate(() => window.dispatchEvent(new Event('focus')));
+  await page.clock.runFor(60_000);
+  await expect(title).toHaveText('Wednesday 4 November');
+});

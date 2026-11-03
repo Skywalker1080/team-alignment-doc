@@ -25,7 +25,24 @@ function resolveToday(): string {
 
 export function App() {
   const [route, setRoute] = useState<Route>(() => routeFromHash(window.location.hash));
-  const [today] = useState(resolveToday);
+  const [today, setToday] = useState(resolveToday);
+
+  // Mobile browsers restore a tab without reloading it, so re-read the date when
+  // the tab comes back into view or focus, and once a minute while it stays open.
+  useEffect(() => {
+    const refresh = () => setToday(resolveToday());
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') refresh();
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    window.addEventListener('focus', refresh);
+    const timer = window.setInterval(refresh, 60_000);
+    return () => {
+      document.removeEventListener('visibilitychange', onVisible);
+      window.removeEventListener('focus', refresh);
+      window.clearInterval(timer);
+    };
+  }, []);
 
   useEffect(() => {
     const onHash = () => {
