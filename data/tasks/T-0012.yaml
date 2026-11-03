@@ -1,0 +1,15 @@
+id: T-0012
+title: "Update Ramanujan SEO/GEO listings at launch"
+description: "Launch is on 7 Nov."
+owner: anyone
+priority: p1
+theme: ramanujan-launch
+deadline:
+  date: 2026-11-07
+  kind: soft
+status: todo
+origin: 2026-11-03
+history:
+  - at: 2026-11-03T20:09:59+05:30
+    by: yogesh
+    event: created

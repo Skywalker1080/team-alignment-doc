@@ -1,1 +1,19 @@
-themes: []
+themes:
+  - id: monetization
+    name: Monetization
+    created: 2026-11-03
+  - id: ramanujan-launch
+    name: Ramanujan launch
+    created: 2026-11-03
+  - id: outreach
+    name: Outreach
+    created: 2026-11-03
+  - id: linkedin-automation
+    name: LinkedIn automation
+    created: 2026-11-03
+  - id: distribution
+    name: Distribution
+    created: 2026-11-03
+  - id: team-process
+    name: Team process
+    created: 2026-11-03
