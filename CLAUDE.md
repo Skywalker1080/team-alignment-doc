@@ -112,7 +112,8 @@ history:
 ```
 
 - `origin` is the id of the meeting the task was born in. For a task created outside a meeting,
-  use the most recent meeting id.
+  use the most recent meeting id. If no meeting exists yet, stop and ask the user to log one
+  with `/meeting` first.
 - `description` may be `""` when the notes say nothing beyond the title.
 - A defaulted deadline (rule 3.10) looks like this:
   ```yaml
@@ -170,6 +171,7 @@ history:
 
 - `why` is optional. Write it only when the notes or the user give a reason.
 - `made` is the meeting id. For a decision recorded outside a meeting, use the most recent meeting id.
+  If no meeting exists yet, stop and ask the user to log one with `/meeting` first.
 - To change a decision, create a new decision and mark the old one superseded (see the table).
   The old one is kept.
 
@@ -187,6 +189,9 @@ history:
     by: pranav
     event: created
 ```
+
+- `made` is the meeting id. For an assumption recorded outside a meeting, use the most recent
+  meeting id. If no meeting exists yet, stop and ask the user to log one with `/meeting` first.
 
 ### Meeting file (`data/meetings/2026-11-03.md`)
 
@@ -270,7 +275,8 @@ any file is written, the raw notes included.
      only your local, unpushed entries with a fresh `npm run ta -- now`.
    - Make the plain fields (`status`, `owner`, `deadline`, `priority`, `theme`, ...) match the
      final history events.
-   - Then `git add` the file and run `git rebase --continue`, and re-run steps 3 to 5.
+   - Then `git add` the file and run `GIT_EDITOR=true git rebase --continue` (so no editor opens
+     and waits), and re-run steps 3 to 5.
    - If you are unsure, run `git rebase --abort` and ask the user.
 9. Push straight to main after the checks pass. Never open a pull request.
    Run `git push origin HEAD:main`. If the push is rejected, go back to step 6 (fix-ids also
