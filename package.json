@@ -9,7 +9,7 @@
   "scripts": {
     "validate": "tsx src/validate/cli.ts",
     "test": "vitest run",
-    "build:bundle": "tsx src/cli/build-bundle.ts",
+    "build:bundle": "tsx scripts/build-bundle.ts",
     "build": "npm run build:bundle && vite build dashboard",
     "dev": "npm run build:bundle && vite dashboard",
     "check:dashboard": "tsx scripts/check-dashboard.ts",
