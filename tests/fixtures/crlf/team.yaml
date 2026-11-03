@@ -1,0 +1,10 @@
+members:
+  - id: yogesh
+    name: Yogesh Sahu
+    emails: [yogesh@example.test]
+  - id: ranjeet
+    name: Ranjeet Ratan
+    emails: [ranjeet@example.test]
+  - id: pranav
+    name: Pranav Darekar
+    emails: [pranav@example.test]

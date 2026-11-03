@@ -1,0 +1,20 @@
+id: T-0008
+title: Send the first outreach batch
+description: Send the first batch of messages to the target list.
+owner: pranav
+priority: p0
+theme: outreach
+deadline:
+  date: 2026-11-11
+  kind: soft
+status: doing
+origin: 2026-11-06
+history:
+  - at: 2026-11-06T19:01:00+05:30
+    by: ranjeet
+    event: created
+  - at: 2026-11-09T10:30:00+05:30
+    by: pranav
+    event: status
+    from: todo
+    to: doing

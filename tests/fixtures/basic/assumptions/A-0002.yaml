@@ -1,0 +1,19 @@
+id: A-0002
+text: Product Hunt exposes enough public data to scrape.
+made: 2026-11-03-2
+theme: lead-generation
+status: confirmed
+evidence: The first export returned 300 profiles with usable fields.
+history:
+  - at: 2026-11-03T20:15:00+05:30
+    by: yogesh
+    event: created
+  - at: 2026-11-08T17:50:00+05:30
+    by: ranjeet
+    event: status
+    from: untested
+    to: confirmed
+  - at: 2026-11-08T17:51:00+05:30
+    by: ranjeet
+    event: evidence
+    text: The first export returned 300 profiles with usable fields.

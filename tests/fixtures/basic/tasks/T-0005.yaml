@@ -1,0 +1,20 @@
+id: T-0005
+title: Set up the shared tracker
+description: Create the shared board and invite the team.
+owner: yogesh
+priority: p1
+theme: team-process
+deadline:
+  date: 2026-11-07
+  kind: hard
+status: done
+origin: 2026-11-03-2
+history:
+  - at: 2026-11-03T20:11:00+05:30
+    by: yogesh
+    event: created
+  - at: 2026-11-06T12:15:00+05:30
+    by: yogesh
+    event: status
+    from: todo
+    to: done

@@ -1,0 +1,21 @@
+id: T-0006
+title: Explore a newsletter channel
+description: Check whether a newsletter adds reach.
+owner: pranav
+priority: p2
+theme: outreach
+deadline:
+  date: 2026-11-08
+  kind: soft
+status: dropped
+origin: 2026-11-03-2
+history:
+  - at: 2026-11-03T20:12:00+05:30
+    by: yogesh
+    event: created
+  - at: 2026-11-07T11:00:00+05:30
+    by: pranav
+    event: status
+    from: todo
+    to: dropped
+    text: Not worth the time before the first outreach batch lands.

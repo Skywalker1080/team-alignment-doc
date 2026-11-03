@@ -1,0 +1,15 @@
+id: T-0001
+title: Build the AWS lead pipeline
+description: Scrape the first lead source into one database.
+owner: ranjeet
+priority: p0
+theme: lead-generation
+deadline:
+  date: 2026-11-03
+  kind: hard
+status: todo
+origin: 2026-11-03
+history:
+  - at: 2026-11-03T18:20:00+05:30
+    by: yogesh
+    event: created

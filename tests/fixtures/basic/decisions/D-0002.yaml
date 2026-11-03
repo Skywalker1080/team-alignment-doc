@@ -1,0 +1,10 @@
+id: D-0002
+text: Plan work in one to two day sprints.
+why: Two week sprints were too long to steer.
+made: 2026-11-06
+theme: team-process
+status: active
+history:
+  - at: 2026-11-06T19:10:00+05:30
+    by: ranjeet
+    event: created

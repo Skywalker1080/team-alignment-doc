@@ -1,0 +1,15 @@
+id: T-0004
+title: Clean up the weekly notes
+description: Tidy the raw notes and check the summaries.
+owner: anyone
+priority: p2
+theme: team-process
+deadline:
+  date: 2026-11-10
+  kind: soft
+status: todo
+origin: 2026-11-03-2
+history:
+  - at: 2026-11-03T20:10:00+05:30
+    by: yogesh
+    event: created

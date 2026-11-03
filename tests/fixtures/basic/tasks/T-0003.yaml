@@ -1,0 +1,26 @@
+id: T-0003
+title: Scrape the first lead source
+description: Collect public profiles and store them with source tags.
+owner: ranjeet
+priority: p0
+theme: lead-generation
+deadline:
+  date: 2026-11-09
+  kind: hard
+status: done
+origin: 2026-11-03
+history:
+  - at: 2026-11-03T18:22:00+05:30
+    by: ranjeet
+    event: created
+  - at: 2026-11-05T09:30:00+05:30
+    by: ranjeet
+    event: deadline
+    from: 2026-11-05
+    to: 2026-11-09
+    text: Rate limits forced a slower export.
+  - at: 2026-11-08T17:45:00+05:30
+    by: ranjeet
+    event: status
+    from: doing
+    to: done
