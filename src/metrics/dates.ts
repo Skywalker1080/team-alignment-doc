@@ -15,12 +15,13 @@ function fromUtcMs(ms: number): string {
 /** The calendar date (YYYY-MM-DD) of an instant in the given time zone. */
 export function dateInTz(isoOrDate: Date | string, tz: string = TZ): string {
   const d = typeof isoOrDate === 'string' ? new Date(isoOrDate) : isoOrDate;
-  return new Intl.DateTimeFormat('en-CA', {
-    timeZone: tz,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(d);
+  // formatToParts, not format(): the order and separators of format() depend on the locale data.
+  const p = Object.fromEntries(
+    new Intl.DateTimeFormat('en-CA', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit' })
+      .formatToParts(d)
+      .map((x) => [x.type, x.value]),
+  );
+  return `${p.year}-${p.month}-${p.day}`;
 }
 
 export function todayIso(now: Date = new Date()): string {

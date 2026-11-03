@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { dateInTz, daysBetween, isoWeek, weekRange, todayIso, TZ } from '../../src/metrics/dates';
 
 describe('dates', () => {
@@ -8,6 +8,17 @@ describe('dates', () => {
   });
   it('dateInTz keeps the IST date for an offset timestamp', () => {
     expect(dateInTz('2026-11-05T00:30:00+05:30')).toBe('2026-11-05');
+  });
+  it('dateInTz builds the date from formatToParts, not a locale-formatted string', () => {
+    // A locale whose format() is not YYYY-MM-DD must not change the result.
+    const spy = vi
+      .spyOn(Intl.DateTimeFormat.prototype, 'format', 'get')
+      .mockReturnValue(() => '11/05/2026');
+    try {
+      expect(dateInTz('2026-11-04T19:00:00Z')).toBe('2026-11-05');
+    } finally {
+      spy.mockRestore();
+    }
   });
   it('todayIso uses IST', () => {
     expect(todayIso(new Date('2026-11-04T19:00:00Z'))).toBe('2026-11-05');
