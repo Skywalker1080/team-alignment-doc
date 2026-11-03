@@ -17,8 +17,8 @@
 
   /* Chart marks. Priority ramp: one accent hue stepped darker (validated ordinal on --surface). */
   --chart-p0: var(--accent);
-  --chart-p1: #b5634a;
-  --chart-p2: #93523f;
+  --chart-p1: #c0684d;
+  --chart-p2: #ab5a41;
   --chart-hard: var(--accent);
   /* "All deadlines": a light tint of the accent, 9.42:1 on --surface, 1.94:1 against the solid hard bar. */
   --chart-all: #f0c2b0;
