@@ -3,9 +3,12 @@ import type { DashboardBundle } from '../../src/bundle/build';
 import { todayIso } from '../../src/metrics/dates';
 import raw from './generated/bundle.json';
 import { Nav, ROUTES, type Route } from './components/Nav';
-import { EmptyState } from './components/EmptyState';
 import { Today } from './pages/Today';
 import { Trackers } from './pages/Trackers';
+import { Decisions } from './pages/Decisions';
+import { Assumptions } from './pages/Assumptions';
+import { Meetings } from './pages/Meetings';
+import { Tasks } from './pages/Tasks';
 
 const bundle = raw as unknown as DashboardBundle;
 
@@ -33,7 +36,6 @@ export function App() {
     return () => window.removeEventListener('hashchange', onHash);
   }, []);
 
-  const label = ROUTES.find((r) => r.id === route)!.label;
   return (
     <>
       <Nav current={route} />
@@ -42,13 +44,14 @@ export function App() {
           <Today bundle={bundle} today={today} />
         ) : route === 'trackers' ? (
           <Trackers bundle={bundle} today={today} />
+        ) : route === 'decisions' ? (
+          <Decisions bundle={bundle} />
+        ) : route === 'assumptions' ? (
+          <Assumptions bundle={bundle} today={today} />
+        ) : route === 'meetings' ? (
+          <Meetings bundle={bundle} />
         ) : (
-          <>
-            <header className="page-head">
-              <h1 className="page-title">{label}</h1>
-            </header>
-            <EmptyState title="Coming soon">This view is being built.</EmptyState>
-          </>
+          <Tasks bundle={bundle} today={today} />
         )}
       </main>
     </>
