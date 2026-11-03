@@ -6,3 +6,7 @@ dashboard/src/generated/
 test-results/
 playwright-report/
 .e2e/
+.DS_Store
+._*
+Thumbs.db
+desktop.ini

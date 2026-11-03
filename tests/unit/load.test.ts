@@ -164,6 +164,18 @@ describe('unknown-file', () => {
     ]);
   }));
 
+  it('skips OS junk files (.DS_Store, Thumbs.db, desktop.ini, AppleDouble ._*)', withBasic(async (dir) => {
+    writeFileSync(join(dir, '.DS_Store'), 'bin');
+    writeFileSync(join(dir, 'tasks', '.DS_Store'), 'bin');
+    writeFileSync(join(dir, 'tasks', 'Thumbs.db'), 'bin');
+    writeFileSync(join(dir, 'meetings', 'desktop.ini'), '[.ShellClassInfo]');
+    writeFileSync(join(dir, 'tasks', '._T-0001.yaml'), 'not: [yaml');
+    writeFileSync(join(dir, 'meetings', '._2026-11-03.md'), 'Mac OS X resource fork');
+    const { data, errors } = await loadRepo(dir);
+    expect(errors).toEqual([]);
+    expect(data.tasks).toHaveLength(8);
+  }));
+
   it('allows .gitkeep anywhere and any file under meetings/raw', withBasic(async (dir) => {
     writeFileSync(join(dir, 'tasks', '.gitkeep'), '');
     writeFileSync(join(dir, '.gitkeep'), '');

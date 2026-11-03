@@ -83,6 +83,11 @@ function parseYamlFile(text: string, file: string, errors: ValidationError[]): u
   }
 }
 
+/** Files an OS drops into folders (Finder, Explorer, AppleDouble `._*`); never data. */
+export function isOsJunk(name: string): boolean {
+  return name === '.DS_Store' || name === 'Thumbs.db' || name === 'desktop.ini' || name.startsWith('._');
+}
+
 /** True when the loader loads (or deliberately skips) this data-dir-relative file. */
 function isKnownFile(rel: string): boolean {
   if (rel === '.gitkeep' || rel.endsWith('/.gitkeep')) return true;
@@ -194,6 +199,7 @@ async function readDirSource(dataDir: string): Promise<{ src: Source; allFiles: 
         if (childRel === 'meetings/raw') continue; // raw notes are never loaded, only referenced
         await walk(childRel);
       } else {
+        if (isOsJunk(e.name)) continue;
         allFiles.push(childRel);
         if (/\.(ya?ml|md)$/.test(e.name)) src.set(childRel, await readFile(join(dataDir, childRel), 'utf8'));
       }
@@ -227,7 +233,7 @@ export async function loadRepoAtRef(repoRoot: string, ref: string): Promise<Repo
   const src: Source = new Map();
   for (const path of stdout.split('\n').map((l) => l.trim()).filter(Boolean)) {
     const rel = posix.relative('data', path);
-    if (rel.startsWith('meetings/raw/') || !/\.(ya?ml|md)$/.test(rel)) continue;
+    if (rel.startsWith('meetings/raw/') || !/\.(ya?ml|md)$/.test(rel) || isOsJunk(posix.basename(rel))) continue;
     const { stdout: text } = await git('show', `${ref}:${path}`);
     src.set(rel, text);
   }
