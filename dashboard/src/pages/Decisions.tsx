@@ -2,13 +2,14 @@ import type { DashboardBundle } from '../../../src/bundle/build';
 import { compareMeetingIds } from '../../../src/model/meeting';
 import { shortDate } from '../format';
 import { EmptyState } from '../components/EmptyState';
-import { JumpLink } from '../components/JumpLink';
+import { JumpLink, useJumpToHashId } from '../components/JumpLink';
 
 type Props = { bundle: DashboardBundle };
 
 const STATUS_NOTE: Record<string, string> = { superseded: 'Superseded', reversed: 'Reversed' };
 
 export function Decisions({ bundle }: Props) {
+  useJumpToHashId();
   const decisions = [...bundle.decisions].sort(
     (a, b) => compareMeetingIds(b.made, a.made) || b.id.localeCompare(a.id),
   );

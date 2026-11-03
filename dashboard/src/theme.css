@@ -17,7 +17,7 @@
 
   /* Chart marks. Priority ramp: one accent hue stepped darker (validated ordinal on --surface). */
   --chart-p0: var(--accent);
-  --chart-p1: #c0684d;
+  --chart-p1: #f0c2b0;
   --chart-p2: #ab5a41;
   --chart-hard: var(--accent);
   /* "All deadlines": a light tint of the accent, 9.42:1 on --surface, 1.94:1 against the solid hard bar. */
@@ -549,7 +549,7 @@ a {
 .swatch-co-2 { background: var(--danger); }
 .swatch-wl-p0 { background: var(--chart-p0); }
 .swatch-wl-p1 { background: var(--chart-p1); }
-.swatch-wl-p2 { background: var(--chart-p2); }
+.swatch-wl-p2 { background: repeating-linear-gradient(135deg, var(--chart-p2) 0 3px, var(--surface) 3px 5px); }
 
 .key-diamond {
   width: 8px;
@@ -627,6 +627,9 @@ a {
 .wl-p0 { fill: var(--chart-p0); }
 .wl-p1 { fill: var(--chart-p1); }
 .wl-p2 { fill: var(--chart-p2); }
+.wl-hatch { fill: url(#wl-hatch); pointer-events: none; }
+.wl-count { font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums; pointer-events: none; fill: var(--bg); }
+.wl-count-p2 { fill: var(--text); paint-order: stroke; stroke: var(--chart-p2); stroke-width: 3px; }
 
 /* Timeline: fixed label column, plot scrolls sideways inside its own box. */
 .timeline {

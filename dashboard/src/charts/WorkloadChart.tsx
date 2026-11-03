@@ -50,6 +50,11 @@ export function WorkloadChart({ bundle }: { bundle: DashboardBundle }) {
               .map((r) => `${firstName(bundle, r.owner)}: ${r.total} (P0 ${r.p0}, P1 ${r.p1}, P2 ${r.p2})`)
               .join('; ')}.`}
           </title>
+          <defs>
+            <pattern id="wl-hatch" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+              <rect width="2" height="5" fill="var(--surface)" />
+            </pattern>
+          </defs>
           {ticks.map((v) => (
             <g key={v}>
               <line className="chart-grid" x1={xOf(v)} x2={xOf(v)} y1={0} y2={rows.length * ROW} />
@@ -74,13 +79,25 @@ export function WorkloadChart({ bundle }: { bundle: DashboardBundle }) {
                 <text className="chart-label" x={0} y={y + BAR_H / 2 + 5}>
                   {name}
                 </text>
-                {segs.map((s, j) => (
-                  <path
-                    key={s.key}
-                    className={`wl-${s.key}`}
-                    d={hBarPath(LABEL + s.x, y, s.width, BAR_H, j === segs.length - 1)}
-                  />
-                ))}
+                {segs.map((s, j) => {
+                  const d = hBarPath(LABEL + s.x, y, s.width, BAR_H, j === segs.length - 1);
+                  return (
+                    <g key={s.key}>
+                      <path className={`wl-${s.key}`} d={d} />
+                      {s.key === 'p2' ? <path className="wl-hatch" d={d} /> : null}
+                      {s.width >= 20 ? (
+                        <text
+                          className={`wl-count wl-count-${s.key}`}
+                          x={LABEL + s.x + s.width / 2}
+                          y={y + BAR_H / 2 + 4}
+                          textAnchor="middle"
+                        >
+                          {r[s.key as (typeof PRIORITIES)[number]]}
+                        </text>
+                      ) : null}
+                    </g>
+                  );
+                })}
                 <text className="chart-value" x={end + 6} y={y + BAR_H / 2 + 4}>
                   {r.total}
                 </text>

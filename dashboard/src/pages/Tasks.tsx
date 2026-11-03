@@ -5,7 +5,7 @@ import { ageDays, isOpen, meetingsSince, overdueDays, type LaneTask } from '../.
 import { firstName, STATUS_LABEL } from '../format';
 import { EmptyState } from '../components/EmptyState';
 import { TaskCard } from '../components/TaskCard';
-import { jumpTo } from '../components/JumpLink';
+import { useJumpToHashId } from '../components/JumpLink';
 
 type Props = { bundle: DashboardBundle; today: string };
 type Filters = { owner: string; theme: string; status: string; priority: string };
@@ -13,10 +13,10 @@ type Filters = { owner: string; theme: string; status: string; priority: string 
 const OPEN = 'open';
 
 /** Reads `#/tasks?all=1&id=T-0003`: all=1 clears the status filter; id picks a row to highlight. */
-function readQuery(): { all: boolean; id: string | null } {
-  if (typeof window === 'undefined') return { all: false, id: null };
+function readQuery(): { all: boolean } {
+  if (typeof window === 'undefined') return { all: false };
   const params = new URLSearchParams(window.location.hash.split('?')[1] ?? '');
-  return { all: params.get('all') === '1', id: params.get('id') };
+  return { all: params.get('all') === '1' };
 }
 
 function initialFilters(): Filters {
@@ -81,10 +81,7 @@ export function Tasks({ bundle, today }: Props) {
         a.id.localeCompare(b.id),
     );
 
-  const targetId = readQuery().id;
-  useEffect(() => {
-    if (targetId) jumpTo(targetId);
-  }, [targetId]);
+  useJumpToHashId();
 
   const filtered = Object.values(filters).some(Boolean);
   return (
