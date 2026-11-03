@@ -53,6 +53,7 @@ jobs:
 
   deploy:
     needs: check
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     # Secrets cannot be read in `if`, so expose them through env first.
     env:
