@@ -1,2 +1,7 @@
 .superpowers/
 node_modules/
+dashboard/dist/
+dashboard/src/generated/
+.check/
+test-results/
+playwright-report/

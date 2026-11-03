@@ -1,0 +1,31 @@
+{
+  "name": "team-alignment",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "validate": "tsx src/cli/validate.ts",
+    "test": "vitest run",
+    "build:bundle": "tsx src/cli/build-bundle.ts",
+    "build": "npm run build:bundle && vite build dashboard",
+    "dev": "npm run build:bundle && vite dashboard",
+    "check:dashboard": "tsx scripts/check-dashboard.ts",
+    "fix-ids": "tsx src/cli/fix-ids.ts",
+    "ta": "tsx src/cli/ta.ts",
+    "prepare": "git config core.hooksPath .githooks"
+  },
+  "dependencies": {
+    "gray-matter": "^4.0.3",
+    "yaml": "^2.9.1",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.0"
+  }
+}
