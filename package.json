@@ -14,7 +14,7 @@
     "dev": "npm run build:bundle && vite dashboard",
     "check:dashboard": "tsx scripts/check-dashboard.ts",
     "fix-ids": "tsx scripts/fix-ids.ts",
-    "ta": "tsx src/cli/ta.ts",
+    "ta": "tsx scripts/ta.ts",
     "prepare": "git config core.hooksPath .githooks",
     "dev:fixture": "cross-env TA_DATA_DIR=tests/fixtures/basic npm run dev"
   },

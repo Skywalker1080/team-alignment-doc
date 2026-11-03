@@ -1,0 +1,4 @@
+#!/bin/sh
+# Installed by `npm install` (prepare script sets core.hooksPath to .githooks).
+# Runs the validator and the unit tests before every commit. Playwright is not run here.
+npm run validate && npm test
