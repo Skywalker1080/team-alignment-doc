@@ -19,7 +19,7 @@ Themes: outreach, lead-generation, team-process (all created 2026-11-03).
 |---|---|---|---|---|---|---|---|
 | T-0001 | ranjeet | p0 | lead-generation | 2026-11-03 (hard) | todo | 2026-11-03 | 7d overdue on 11-10 |
 | T-0002 | pranav | p1 | outreach | 2026-11-12 (soft) | doing | 2026-11-03 | doing since 11-05 |
-| T-0003 | ranjeet | p0 | lead-generation | 2026-11-09 (hard) | done | 2026-11-03 | deadline moved 11-05 to 11-09 (event 11-05), done 2026-11-08T17:45; first deadline 11-05 was missed |
+| T-0003 | ranjeet | p0 | lead-generation | 2026-11-09 (hard) | done | 2026-11-03 | deadline moved 11-05 to 11-09 (event 11-05), doing since 2026-11-05T09:45, done 2026-11-08T17:45; first deadline 11-05 was missed |
 | T-0004 | anyone | p2 | team-process | 2026-11-10 (soft) | todo | 2026-11-03-2 | due exactly today |
 | T-0005 | yogesh | p1 | team-process | 2026-11-07 (hard) | done | 2026-11-03-2 | done 2026-11-06T12:15, on time |
 | T-0006 | pranav | p2 | outreach | 2026-11-08 (soft) | dropped | 2026-11-03-2 | dropped 2026-11-07T11:00 with reason |

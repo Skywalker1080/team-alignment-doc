@@ -19,6 +19,11 @@ history:
     from: 2026-11-05
     to: 2026-11-09
     text: Rate limits forced a slower export.
+  - at: 2026-11-05T09:45:00+05:30
+    by: ranjeet
+    event: status
+    from: todo
+    to: doing
   - at: 2026-11-08T17:45:00+05:30
     by: ranjeet
     event: status
