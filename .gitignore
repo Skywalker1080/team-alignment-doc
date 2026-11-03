@@ -10,3 +10,4 @@ playwright-report/
 ._*
 Thumbs.db
 desktop.ini
+.vercel
