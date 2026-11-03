@@ -7,7 +7,7 @@
     "node": ">=22"
   },
   "scripts": {
-    "validate": "tsx src/cli/validate.ts",
+    "validate": "tsx src/validate/cli.ts",
     "test": "vitest run",
     "build:bundle": "tsx src/cli/build-bundle.ts",
     "build": "npm run build:bundle && vite build dashboard",

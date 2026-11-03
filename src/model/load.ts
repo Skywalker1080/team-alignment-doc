@@ -38,6 +38,11 @@ export interface RepoData {
   assumptions: Assumption[];
   /** Record id (task, decision, assumption, meeting) to its repo-relative path. */
   fileOf: Record<string, string>;
+  /**
+   * One entry per loaded task/decision/assumption file, so duplicate ids and
+   * id/file-name mismatches stay detectable (fileOf keeps only one path per id).
+   */
+  recordFiles: { id: string; file: string }[];
 }
 
 const execFileAsync = promisify(execFile);
@@ -81,6 +86,7 @@ function parseYamlFile(text: string, file: string, errors: ValidationError[]): u
 function loadFromSource(src: Source): { data: RepoData; errors: ValidationError[] } {
   const errors: ValidationError[] = [];
   const fileOf: Record<string, string> = {};
+  const recordFiles: { id: string; file: string }[] = [];
   const repoPath = (rel: string) => `data/${rel}`;
 
   let team: Team = { members: [] };
@@ -117,6 +123,7 @@ function loadFromSource(src: Source): { data: RepoData; errors: ValidationError[
       if (rec) {
         out.push(rec);
         fileOf[rec.id] = file;
+        recordFiles.push({ id: rec.id, file });
       }
     }
     return out.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
@@ -146,7 +153,7 @@ function loadFromSource(src: Source): { data: RepoData; errors: ValidationError[
   }
   meetings.sort((a, b) => compareMeetingIds(a.id, b.id));
 
-  return { data: { team, themes, meetings, tasks, decisions, assumptions, fileOf }, errors };
+  return { data: { team, themes, meetings, tasks, decisions, assumptions, fileOf, recordFiles }, errors };
 }
 
 async function readDirSource(dataDir: string): Promise<Source> {
