@@ -5,6 +5,7 @@ import raw from './generated/bundle.json';
 import { Nav, ROUTES, type Route } from './components/Nav';
 import { EmptyState } from './components/EmptyState';
 import { Today } from './pages/Today';
+import { Trackers } from './pages/Trackers';
 
 const bundle = raw as unknown as DashboardBundle;
 
@@ -39,6 +40,8 @@ export function App() {
       <main className="page">
         {route === 'today' ? (
           <Today bundle={bundle} today={today} />
+        ) : route === 'trackers' ? (
+          <Trackers bundle={bundle} today={today} />
         ) : (
           <>
             <header className="page-head">
