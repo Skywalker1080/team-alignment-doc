@@ -42,7 +42,11 @@ async function main(): Promise<number> {
   });
   if (r.status === 0) return 0;
   process.stderr.write(
-    `npm run validate failed after editing ${filePath}. Fix these before going on:\n${r.stderr || r.stdout}`,
+    `npm run validate reports errors after editing ${filePath}.\n` +
+      'If you are partway through a multi-file change, [origin], [meeting-refs], [theme] and ' +
+      '[superseded] errors about records not written yet are expected: finish writing the ' +
+      'change, then fix what remains. Fix any other error now.\n' +
+      (r.stderr || r.stdout),
   );
   return 2;
 }

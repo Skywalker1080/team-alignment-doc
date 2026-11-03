@@ -57,6 +57,21 @@ describe('hook-validate', () => {
     expect(r.status).toBe(2);
   });
 
+  const hasSh = spawnSync('sh', ['-c', 'exit 0']).status === 0;
+  it.skipIf(!hasSh)('settings.json hook command works from any cwd via CLAUDE_PROJECT_DIR', () => {
+    const settings = JSON.parse(readFileSync(join(root, '.claude', 'settings.json'), 'utf8'));
+    const command: string = settings.hooks.PostToolUse[0].hooks[0].command;
+    expect(command).toContain('"$CLAUDE_PROJECT_DIR"');
+    const r = spawnSync('sh', ['-c', command], {
+      cwd: tmpdir(),
+      input: JSON.stringify({ tool_input: { file_path: join(root, 'data', 'meetings', '2026-11-06.md') } }),
+      encoding: 'utf8',
+      env: { ...process.env, CLAUDE_PROJECT_DIR: root, TA_DATA_DIR: brokenSectionsFixture() },
+    });
+    expect(r.status).toBe(2);
+    expect(r.stderr).toContain('[sections]');
+  });
+
   it('exits 0 for a data/ file when the data is valid', () => {
     const r = runHook(
       { tool_input: { file_path: join(root, 'data', 'tasks', 'T-0001.yaml') } },

@@ -16,7 +16,8 @@ Update a record. Arguments: `$ARGUMENTS` (an id such as `T-0042`, followed by wh
    - priority: `event: priority`, `from`, `to` (`p0`, `p1` or `p2`).
    - status: `event: status`, `from`, `to`. Dropping needs a reason in `text`; ask if it is missing.
    - theme: `event: theme`, `from`, `to`. Reuse an existing theme; show the user before
-     creating a new one in `data/themes.yaml`.
+     creating a new one. Add a new theme to `data/themes.yaml` before editing the record, or
+     the hook reports `[theme]`.
    - assumption tested: set `status` and `evidence`; append `event: status` (`from`, `to`), then
      `event: evidence` with the evidence in `text`.
    - decision reversed: set `status: reversed`; append `event: reversed` with the reason in `text`.

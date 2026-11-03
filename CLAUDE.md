@@ -25,8 +25,21 @@ and ask the user how to go on. Do not work around a rule.
 Slash commands for the team live in `.claude/commands/`: `/meeting`, `/done`, `/drop`, `/note`,
 `/update`, `/decide`, `/today`.
 
-A hook runs `npm run validate` after every Write or Edit under `data/`. If it reports errors,
-fix them before you do anything else.
+A hook runs `npm run validate` after every Write or Edit under `data/` and shows you any errors.
+
+Write order for a change that touches several files:
+
+1. `data/meetings/raw/<id>.md` (new meetings only)
+2. `data/themes.yaml` (new themes)
+3. the meeting file
+4. new task, decision and assumption files; to supersede a decision, the new decision first,
+   then the old one
+5. edits to existing records
+
+While such a change is half written, the hook will report `[origin]`, `[meeting-refs]`,
+`[theme]` and `[superseded]` errors that name records or themes you have not written yet.
+Those are expected: finish writing every file of the change, then fix whatever the validator
+still reports. Any other error, or one about a file you have already finished, fix right away.
 
 ## 2. Who the user is
 
@@ -217,7 +230,8 @@ Meeting rules:
    task, decision and assumption files. With more than 4 tasks, group them into at most 4 bullets.
 4. `attendees` are member ids. Ask the user when the notes do not say who was there.
 5. `notes_by` is the current user (`whoami`).
-6. `raw` is `raw/<meeting id>.md`. The raw notes are saved exactly as the user gave them.
+6. `raw` is `raw/<meeting id>.md`. The raw notes are saved exactly as the user gave them, only
+   after the user confirms the draft, together with the other files.
 7. `principle` is optional. Write it only when the meeting stated one.
 8. `tasks_created`, `decisions_made` and `assumptions_made` list exactly the records born in this
    meeting. Each listed record has `origin` / `made` equal to this meeting id.
@@ -228,11 +242,12 @@ Meeting rules:
 
 Run these steps in order for every change, including one-line notes. Small changes (`/done`,
 `/note`, and so on) need no confirmation from the user. `/meeting` needs an explicit yes before
-any files are written.
+any file is written, the raw notes included.
 
 1. Run `npm run ta -- whoami` (section 2). Run `git branch --show-current`. If it is not `main`,
    stop and ask the user.
-2. Make the edits under `data/`. If the validator hook reports errors, fix them.
+2. Make the edits under `data/`, in the write order from section 1. Once every file of the
+   change is written, fix any errors the validator hook still reports.
 3. Run `npm run validate`. It must pass. Fix the data and re-run until it does.
 4. Run `npm test`. It must pass. If it fails because of your data change, fix the data. If it
    fails for any other reason, stop and tell the user.
@@ -245,9 +260,18 @@ any files are written.
    message `<what> · <First>`, for example `T-0042 done · Ranjeet`,
    `meeting 2026-11-03 · Pranav`, `T-0042 note · Yogesh`. Never use `--no-verify`; the
    pre-commit hook runs the validator and the tests.
+   If you came back here from a rejected push (step 9) and `git status --short data` shows no
+   changes, skip the commit: your commit already exists, and fix-ids amends it when needed.
 8. Run `git rebase origin/main`. If new commits came in, re-run steps 3 to 5. If the rebase
-   stops with a conflict in a record, keep every history entry from both sides in time order
-   and never drop an incoming change. If you are unsure, run `git rebase --abort` and ask the user.
+   stops with a conflict in a record file:
+   - Keep the incoming (origin) `history` exactly as it is, entry for entry.
+   - Append your local, unpushed entries after it.
+   - If one of your local entries now has an `at` earlier than the last incoming entry, re-stamp
+     only your local, unpushed entries with a fresh `npm run ta -- now`.
+   - Make the plain fields (`status`, `owner`, `deadline`, `priority`, `theme`, ...) match the
+     final history events.
+   - Then `git add` the file and run `git rebase --continue`, and re-run steps 3 to 5.
+   - If you are unsure, run `git rebase --abort` and ask the user.
 9. Push straight to main after the checks pass. Never open a pull request.
    Run `git push origin HEAD:main`. If the push is rejected, go back to step 6 (fix-ids also
    handles a clash in your single local commit by amending it).
