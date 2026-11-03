@@ -15,12 +15,13 @@
   --danger-ink: color-mix(in oklab, var(--danger) 72%, var(--text));
   --warn-ink: var(--warn);
 
-  /* Chart marks. Priority / promise ramp: one accent hue stepped darker (validated ordinal on --surface). */
+  /* Chart marks. Priority ramp: one accent hue stepped darker (validated ordinal on --surface). */
   --chart-p0: var(--accent);
   --chart-p1: #b5634a;
   --chart-p2: #93523f;
   --chart-hard: var(--accent);
-  --chart-all: var(--chart-p2);
+  /* "All deadlines": a light tint of the accent, 9.42:1 on --surface, 1.94:1 against the solid hard bar. */
+  --chart-all: #f0c2b0;
   --chart-open: #bdbab3;
   --chart-quiet: #7a776f;
   --chart-grid: var(--border);
