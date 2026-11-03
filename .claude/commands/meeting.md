@@ -26,7 +26,8 @@ If the raw notes above are empty, ask the user to paste them and stop.
      `defaulted: true`.
    - Themes: read `data/themes.yaml` and reuse a theme when one fits. Mark any new theme as new.
    - Meeting sections: at most 4 bullets each, never padded, only Discussion, Decisions, Tasks,
-     Assumptions, in that order.
+     Assumptions, in that order. Discussion is required: if the notes have no discussion
+     beyond the decisions and tasks, write one bullet saying what the meeting covered.
    - Attendees: ask if the notes do not say.
 4. Show the full draft in one message:
    - The TLDR sections exactly as they will be written.

@@ -210,7 +210,9 @@ Meeting rules:
 1. Every meeting section has at most 4 bullet points. Never pad to reach 4.
 2. Only these headings, in this order: `## Discussion` (required), `## Decisions`, `## Tasks`,
    `## Assumptions`. Leave out a section when there is nothing to say. Every section you keep
-   has 1 to 4 bullets. No other headings and no text outside the bullets.
+   has 1 to 4 bullets. No other headings and no text outside the bullets. When the notes hold
+   only decisions, tasks and assumptions, write one Discussion bullet that says what the meeting
+   covered, and nothing more.
 3. Bullets are short summaries in plain prose with first names. The full detail lives in the
    task, decision and assumption files. With more than 4 tasks, group them into at most 4 bullets.
 4. `attendees` are member ids. Ask the user when the notes do not say who was there.
