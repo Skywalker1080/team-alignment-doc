@@ -12,7 +12,7 @@ describe('dates', () => {
   it('dateInTz builds the date from formatToParts, not a locale-formatted string', () => {
     // A locale whose format() is not YYYY-MM-DD must not change the result.
     const spy = vi
-      .spyOn(Intl.DateTimeFormat.prototype, 'format', 'get')
+      .spyOn(Intl.DateTimeFormat.prototype as { format: unknown }, 'format', 'get')
       .mockReturnValue(() => '11/05/2026');
     try {
       expect(dateInTz('2026-11-04T19:00:00Z')).toBe('2026-11-05');
