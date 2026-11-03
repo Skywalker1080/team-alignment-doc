@@ -1,4 +1,6 @@
 import { describe, it, expect } from 'vitest';
+import { cpSync, mkdtempSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { formatToday, nextId, nowIst, resolveMember } from '../../scripts/ta';
@@ -85,12 +87,28 @@ describe('ta CLI', () => {
     execFileSync(process.execPath, ['--import', 'tsx', 'scripts/ta.ts', ...args], {
       cwd: root,
       encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'pipe'],
       env: { ...process.env, ...env },
     });
 
   it('next-id reads the data dir', () => {
     expect(ta(['next-id', 'T'], { TA_DATA_DIR: fx('basic') }).trim()).toBe('T-0009');
     expect(ta(['next-id', 'A'], { TA_DATA_DIR: fx('basic') }).trim()).toBe('A-0003');
+  });
+
+  it('whoami reads only team.yaml, so broken data elsewhere does not block it', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'ta-whoami-'));
+    cpSync(fx('basic'), dir, { recursive: true });
+    writeFileSync(join(dir, 'tasks', 'T-0001.yaml'), 'id: [broken');
+    writeFileSync(join(dir, 'stray.txt'), 'unknown file');
+    const gitEmail = (email: string) => ({
+      TA_DATA_DIR: dir,
+      GIT_CONFIG_COUNT: '1',
+      GIT_CONFIG_KEY_0: 'user.email',
+      GIT_CONFIG_VALUE_0: email,
+    });
+    expect(ta(['whoami'], gitEmail('Ranjeet@Example.test')).trim()).toBe('ranjeet');
+    expect(() => ta(['whoami'], gitEmail('nobody@example.test'))).toThrow(/unknown git email/);
   });
 
   it('now prints an IST timestamp', () => {

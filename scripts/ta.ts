@@ -5,11 +5,12 @@
 //   now               current time in IST with offset, for history `at`
 // Reads TA_DATA_DIR (default: data).
 import { execFileSync } from 'node:child_process';
-import { readdirSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { parse as parseYaml } from 'yaml';
 import { loadRepo, type RepoData } from '../src/model/load';
-import type { Team } from '../src/model/schemas';
+import { TeamSchema, type Team } from '../src/model/schemas';
 import { TZ, todayIso } from '../src/metrics/dates';
 import { todayLanes } from '../src/metrics/tasks';
 import { originBadge } from '../dashboard/src/format';
@@ -87,6 +88,14 @@ function idsInDir(dataDir: string, kind: IdKind): string[] {
   }
 }
 
+/** Reads only team.yaml, so broken records elsewhere never block identification. */
+function loadTeam(dataDir: string): Team {
+  const file = join(dataDir, 'team.yaml');
+  const r = TeamSchema.safeParse(parseYaml(readFileSync(file, 'utf8'), { schema: 'core' }));
+  if (!r.success) throw new Error(`${file} is invalid: ${r.error.issues.map((i) => i.message).join('; ')}`);
+  return r.data;
+}
+
 async function loadOrFail(dataDir: string): Promise<RepoData> {
   const { data, errors } = await loadRepo(dataDir);
   if (errors.length) {
@@ -107,7 +116,7 @@ async function main(argv: string[]): Promise<number> {
       } catch {
         // not set
       }
-      const id = resolveMember(email, (await loadOrFail(dataDir)).team);
+      const id = resolveMember(email, loadTeam(dataDir));
       if (!id) {
         console.error(`unknown git email ${email || '(not set)'}; add it to data/team.yaml`);
         return 1;
