@@ -70,7 +70,7 @@ describe('hook-validate', () => {
     });
     expect(r.status).toBe(2);
     expect(r.stderr).toContain('[sections]');
-  });
+  }, 30_000); // npx + tsx start-up is slow while the git-repo tests run in parallel
 
   it('exits 0 for a data/ file when the data is valid', () => {
     const r = runHook(
