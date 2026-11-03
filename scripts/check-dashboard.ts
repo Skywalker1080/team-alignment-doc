@@ -11,9 +11,7 @@ import { build, preview } from 'vite';
 import { loadRepo, type RepoData } from '../src/model/load';
 import { todayIso } from '../src/metrics/dates';
 import { todayLanes } from '../src/metrics/tasks';
-
-type Kind = 'tasks' | 'decisions' | 'assumptions' | 'meetings';
-type Changed = { id: string; kind: Kind };
+import { changedRecords, type Changed, type Kind } from '../src/check/changed';
 
 const SIZES = [
   { suffix: '', width: 1280, height: 900 },
@@ -41,24 +39,13 @@ const git = (...args: string[]) =>
 
 /** Record ids touched under the data dir, plus whether team.yaml / themes.yaml changed. */
 function changedFromGit(dataDir: string): { changed: Changed[]; configChanged: boolean } {
+  const repoRoot = git('rev-parse', '--show-toplevel')[0]!;
+  // diff prints repo-relative paths; ls-files --full-name does too.
   const files = [
     ...git('diff', '--name-only', 'HEAD', '--', dataDir),
-    ...git('ls-files', '--others', '--exclude-standard', '--', dataDir),
-  ].map((f) => f.replace(/\\/g, '/'));
-  const prefix = dataDir.replace(/\\/g, '/').replace(/\/+$/, '') + '/';
-  const seen = new Map<string, Changed>();
-  let configChanged = false;
-  for (const f of files) {
-    const rel = f.startsWith(prefix) ? f.slice(prefix.length) : f;
-    if (/^(team|themes)\.yaml$/.test(rel)) {
-      configChanged = true;
-      continue;
-    }
-    // meetings/raw/* and anything else is ignored by this pattern.
-    const m = /^(tasks|decisions|assumptions|meetings)\/([^/]+)\.(yaml|md)$/.exec(rel);
-    if (m) seen.set(m[2]!, { id: m[2]!, kind: m[1] as Kind });
-  }
-  return { changed: [...seen.values()], configChanged };
+    ...git('ls-files', '--others', '--exclude-standard', '--full-name', '--', dataDir),
+  ];
+  return changedRecords(files, repoRoot, dataDir);
 }
 
 function parseIds(argv: string[]): string[] | null {
