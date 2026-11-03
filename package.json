@@ -13,7 +13,7 @@
     "build": "npm run build:bundle && vite build dashboard",
     "dev": "npm run build:bundle && vite dashboard",
     "check:dashboard": "tsx scripts/check-dashboard.ts",
-    "fix-ids": "tsx src/cli/fix-ids.ts",
+    "fix-ids": "tsx scripts/fix-ids.ts",
     "ta": "tsx src/cli/ta.ts",
     "prepare": "git config core.hooksPath .githooks"
   },
