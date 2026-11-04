@@ -4,7 +4,7 @@ The shared record of our meetings, tasks, decisions and assumptions (Yogesh, Ran
 You talk to Claude Code; Claude writes the files under `data/`; every push to `main` is checked
 and published to a view-only dashboard.
 
-Dashboard: https://team-alignment.vercel.app
+Dashboard: https://skywalker1080.github.io/team-alignment-doc/
 
 ## One-time setup (each teammate)
 
@@ -58,19 +58,15 @@ shows the draft, and saves it after you confirm.
 
 ## Hosting setup (whoever owns the repo, once)
 
-The dashboard is the Vercel project `team-alignment`. GitHub Actions deploys it to production
-only after every check passes (the Vercel Git integration is deliberately not connected, so a
-failing push never goes live).
+The dashboard is published with GitHub Pages. GitHub Actions deploys it only after every check
+passes on `main`, so a failing push never goes live. No secrets are needed.
 
-1. Create a Vercel access token (Vercel, Account Settings, Tokens).
-2. In the GitHub repo, go to Settings, Secrets and variables, Actions, and add the secrets
-   `VERCEL_TOKEN`, `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID`. The two ids are in
-   `.vercel/project.json` after running `npx vercel link` in a clone (`orgId`, `projectId`).
-3. Push to `main` (or run the CI workflow by hand). Without `VERCEL_TOKEN`, CI still checks
-   everything and just skips the deploy.
-4. To deploy by hand from a clone: `npx vercel deploy --prod`.
+1. In the GitHub repo, Settings, Pages: Source is "GitHub Actions" (already set).
+2. Add teammates under Settings, Collaborators so they can push to `main`.
+3. Push to `main`, or run the CI workflow by hand from `main`.
 
-Note: Vercel's free Hobby plan is for non-commercial use; an agency project may need Pro.
+Note: the repo is public, so everything in it (including `data/team.yaml` and the raw meeting
+notes) can be read by anyone. The dashboard itself never shows email addresses.
 
 ## Troubleshooting
 

@@ -49,39 +49,21 @@ jobs:
       - name: Type-check
         run: npx tsc -p .
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-pages-artifact@v3
         with:
-          name: dashboard-dist
           path: dashboard/dist
-          if-no-files-found: error
 
+  # Publishes the checked build to GitHub Pages, only from main and only after `check` passes.
   deploy:
     needs: check
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    # Secrets cannot be read in `if`, so expose them through env first.
-    # The Vercel CLI reads VERCEL_ORG_ID / VERCEL_PROJECT_ID from env to pick the project.
-    env:
-      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Skip notice
-        if: env.VERCEL_TOKEN == ''
-        run: echo "VERCEL_TOKEN is not set, skipping deploy."
-
-      - uses: actions/checkout@v4
-        if: env.VERCEL_TOKEN != ''
-
-      - uses: actions/setup-node@v4
-        if: env.VERCEL_TOKEN != ''
-        with:
-          node-version: 24
-          cache: npm
-
-      - name: Deploy to Vercel production
-        if: env.VERCEL_TOKEN != ''
-        run: |
-          npx --yes vercel@latest pull --yes --environment=production --token="$VERCEL_TOKEN"
-          npx --yes vercel@latest build --prod --token="$VERCEL_TOKEN"
-          npx --yes vercel@latest deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+      - id: deployment
+        uses: actions/deploy-pages@v4
